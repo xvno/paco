@@ -1,46 +1,15 @@
+// libs
 const Koa = require('koa');
 const NeDB = require('nedb');
 
+// utils
+const { promisify } = require('./libs/dbutils');
+const { ensureUser } = require('./libs/user');
+
+// main
 const app = new Koa();
-const db = new NeDB({ filename: './data/db.nedb', autoload: true });
+const database = new NeDB({ filename: './data/db.nedb', autoload: true });
+const db = promisify(database);
 
-db.findOne({ seq: 1 }, function (err, docs) {
-    if (err) {
-        return console.log('error occured:', err);
-    }
-    console.log('data: ', docs);
-    if (!doc) {
-        init(db);
-    }
-});
-
-function init(database) {
-    return new Promise(function (resolve, reject) {
-        database.update(
-            { seq: 1, type: 'user' },
-            {
-                seq: 1,
-                ts: Date.now(),
-                cnt: 0,
-                name: 'volving',
-                detail: 'volving',
-                type: 'user',
-                path: '',
-                tag: [],
-            },
-            { upsert: true },
-            (err, numRepaced, upsert) => {
-                if (err) {
-                    reject(new Error('Upsert error!'));
-                }
-                return console.log(
-                    'numRepaced: ',
-                    numRepaced,
-                    ' upsert: ',
-                    upsert
-                );
-                resolve({ numRepaced, upsert });
-            }
-        );
-    });
-}
+// insert a basic user account
+ensureUser(db);
