@@ -1,4 +1,4 @@
-# PICO -- a paste and copy tool
+# PaCo -- a paste and copy tool
 
 ## 简介
 
